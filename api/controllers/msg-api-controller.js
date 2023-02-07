@@ -51,9 +51,10 @@ export const addNewMessage = async (req, res) => {
     // res.status(200).send('Successful API POST Request');
 
     try {
-        let message = await messageSchema.validate(req.body);
-        message = {id: messages.length, ...message};
-        messages.unshift(message);
+        // let message = await messageSchema.validate(req.body);
+        // message = {id: messages.length, ...message};
+        // messages.unshift(message);
+        let message = await messageModel.create(req.body);
         res.status(201).json(message);
     } catch (err) {
         res
