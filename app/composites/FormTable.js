@@ -9,7 +9,7 @@ const FormTable = ({jsonData}) => {
 
     const addNewMessage = async (values) => {
         try {
-            let response = await axios.post('http://10.21.75.107:3004/api/messages', values);
+            let response = await axios.post(`${process.env.NEXT_PUBLIC_HOST}/api/messages`, values);
             if (response.status == 201){
                 console.log(response);
                 setData([response.data, ...data]);
