@@ -18,7 +18,7 @@ const typeDefs = `#graphql
 
     "This schema allows the following query:"
     type Query {
-        messages : [Message!]!
+        messages: [Message!]!
     }
 
     "Schema allows the following mutation:"
@@ -30,7 +30,7 @@ const typeDefs = `#graphql
 const resolvers = {
     Query: {
         messages: async (_, __, { dataSources }) => {
-            return dataSources.messagesAPI.messages();
+            return dataSources.messagesAPI.getMessages();
         }
     },
     Mutation: {
