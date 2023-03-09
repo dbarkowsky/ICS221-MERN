@@ -1,32 +1,30 @@
 import mongoose from 'mongoose';
 const userModel = mongoose.model('user');
 
-// GET Request Handler
-export const getAllMessages = async (req, res) => {
-    try {
-        let messages = await userModel.find({}, '', { sort: { _id: -1 }}).exec();
-        res.status(200).json(messages);
-    } catch (err) {
-        res.status(400).send('Bad Request');
-    }
-
-};
-
-// POST Request Handler
-export const addNewMessage = async (req, res) => {
-    try {
-        let message = await userModel.create(req.body);
-        res.status(201).json(message);
-    } catch (err) {
-        res
-            .status(400)
-            .send('Bad Request. The message in the body of the \
-        Request is either missing or malformed.');
-    }
-};
-
 const registerNewUser = async (req, res) => {
-    res.status(200).send('Successful new user');
+    const { email, username, password } = req.body;
+    try {
+        if (await alreadyExists(email, username)) return res.status(403).send('Username or email already exists');
+        let user = await userModel.create({
+            email,
+            username,
+            password
+        });
+        return res.status(201).json(user);
+    } catch (err) {
+        return res.status(400).send('Bad Request');
+    }
 }
+
+// helper funtion to see if email or username already exists
+// Returns true/false
+const alreadyExists = async (email, username) => (
+    await userModel.exists({
+        '$or': [
+            { email: email },
+            { username: username }
+        ]
+    })
+);
 
 export { registerNewUser };
