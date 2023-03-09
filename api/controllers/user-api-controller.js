@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import passport from 'passport';
+import { BasicStrategy } from 'passport-http';
 const userModel = mongoose.model('user');
 
 const registerNewUser = async (req, res) => {
@@ -26,5 +28,28 @@ const alreadyExists = async (email, username) => (
         ]
     })
 );
+
+// passport authentication configuration
+passport.use(new BasicStrategy(
+    (username, password, done) => {
+        userModel
+        .findOne({
+            '$or': [
+                { email: username },
+                { username: username }
+            ]
+        })
+        .exec( async (error, user) => {
+            if (error) return done(error);
+            // user wasn't found
+            if (!user) return done(null, false);
+            // user was found, see if it's a valid password
+            if (!await user.verifyPassword(password)) { 
+                return done(null, false); 
+            }
+            return done(null, user);
+        });
+    }
+));
 
 export { registerNewUser };
