@@ -8,20 +8,24 @@ import axios from 'axios';
 import { gql } from '@apollo/client';
 import client from '../apollo-client';
 
+// GraphQL Query to get all the messages
+const GET_MESSAGES = gql`
+  query GetMessages{
+    messages{
+      id
+      name
+      msgText
+    }
+  }
+`;
+
 export async function getStaticProps() {
   let jsonData;
   try {
     // const { data } = await axios.get(`${process.env.NEXT_PUBLIC_HOST}/api/messages`);
     const { data } = await client.query({
-      query: gql`
-        query GetMessages {
-          messages {
-            id
-            name
-            msgText
-          }
-        }
-      `
+      query: GET_MESSAGES,
+      fetchPolicy: 'network-only'
     })
     jsonData = data.messages;
   } catch (error) {
