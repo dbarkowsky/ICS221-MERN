@@ -1,0 +1,1 @@
+Run the documentation server with the command `redocly build-docs mb-api-spec.json`

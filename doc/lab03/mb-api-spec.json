@@ -1,0 +1,195 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Message Board API",
+        "version": "1.0"
+    },
+    "components": {
+        "schemas": {
+            "message": {
+                "type": "object",
+                "description": "A message",
+                "required": [
+                    "name",
+                    "msgText"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 15,
+                        "pattern": "^[A-Za-z]+$",
+                        "description": "Name of User who created the message.",
+                        "example": "Fred"
+                    },
+                    "msgText": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 30,
+                        "description": "A message's text.",
+                        "example": "Hello World!"
+                    }
+                }
+            },
+            "user": {
+                "type": "object",
+                "description": "A user",
+                "required": [
+                    "email",
+                    "username",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 50,
+                        "pattern": "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+                        "description": "Email of user",
+                        "example": "420NoScope@hotmail.com"
+                    },
+                    "username": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 15,
+                        "pattern": "^[A-Za-z0-9-_]+$",
+                        "description": "Pseudonym of user",
+                        "example": "batmanFan89"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "minLength": 8,
+                        "maxLength": 64,
+                        "pattern": "^.+$",
+                        "description": "User password",
+                        "example": "Password123"
+                    }
+                }
+            },
+            "userWithId": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/user"
+                    },
+                    {
+                        "type": "object",
+                        "required": ["id"],
+                        "properties": {
+                            "id": {
+                                "type": "number",
+                                "description": "The user's ID",
+                                "example": "640badb635d421c93cae8169"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "responses": {
+            "429TooManyRequests": {
+                "description": "Too many requests."
+            }
+        }
+    },
+    "paths": {
+        "/messages": {
+            "description": "All the messages",
+            "get": {
+                "summary": "List all the messages",
+                "description": "List all the messages in the order they were posted (newest at top).",
+                "responses": {
+                    "200": {
+                        "description": "All the messages",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/message"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/429TooManyRequests"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new message",
+                "description": "Creates a message and adds it to the messages list.",
+                "requestBody": {
+                    "description": "Message's data",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/message"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/message"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The message in the body of the Request is either missing or malformed."
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/429TooManyRequests"
+                    }
+                }
+            }
+        },
+        "/users": {
+            "description": "All the users",
+            "post": {
+                "summary": "Registers a new user",
+                "description": "Creates a new user and adds it to the user collection",
+                "requestBody": {
+                    "description": "User's data",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/user"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/userWithId"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The message in the body of the Request is either missing or malformed."
+                    },
+                    "403": {
+                        "description": "Username or email is already in use"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/429TooManyRequests"
+                    }
+                }
+            }
+        }
+    }
+}
