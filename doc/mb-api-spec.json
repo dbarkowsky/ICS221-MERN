@@ -84,6 +84,29 @@
                         }
                     }
                 ]
+            },
+            "loginCredentials": {
+                "type": "object",
+                "description": "A user's username and password",
+                "required": [
+                    "username",
+                    "password"
+                ],
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "maxLength": 50,
+                        "description": "Pseudonym of user",
+                        "example": "batmanFan89"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "maxLength": 64,
+                        "description": "User password",
+                        "example": "Password123"
+                    }
+                }
             }
         },
         "responses": {
@@ -184,6 +207,50 @@
                     },
                     "403": {
                         "description": "Username or email is already in use"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/429TooManyRequests"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "description": "Logs users into application",
+            "post": {
+                "summary": "Logs the user into the application",
+                "description": "Accepts username and password, returns a JWT if successful",
+                "requestBody": {
+                    "description": "Login credentials",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/loginCredentials"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successfully logged in",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "JWT Token",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The message in the body of the Request is either missing or malformed."
+                    },
+                    "401": {
+                        "description": "Username and password do not match"
                     },
                     "429": {
                         "$ref": "#/components/responses/429TooManyRequests"
