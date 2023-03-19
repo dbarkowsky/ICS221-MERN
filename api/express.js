@@ -1,3 +1,4 @@
+import 'dotenv/config.js';
 import './db.js';
 import express from 'express';
 import cookieParser from 'cookie-parser';
