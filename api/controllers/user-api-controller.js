@@ -18,6 +18,10 @@ const registerNewUser = async (req, res) => {
     }
 }
 
+const logInUser = async (req, res) => {
+    res.status(200).send('Successful API login request');
+}
+
 // helper funtion to see if email or username already exists
 // Returns true/false
 const alreadyExists = async (email, username) => (
@@ -52,4 +56,4 @@ passport.use(new BasicStrategy(
     }
 ));
 
-export { registerNewUser };
+export { registerNewUser, logInUser };
