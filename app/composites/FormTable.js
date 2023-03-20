@@ -2,10 +2,17 @@ import MessageTable from "@/components/MessageTable";
 import NewMessageForm from "@/components/NewMessageForm";
 import { useState } from 'react';
 import axios from 'axios';
+import LoginForm from "@/components/LoginForm";
 
 const FormTable = ({jsonData}) => {
 
     const [data, setData] = useState(jsonData);
+    const [userAuthenticated, setUserAuthenticated] = useState(false);
+
+    const logInUser = async (values) => {
+        console.log(values);
+        setUserAuthenticated(true);
+    }
 
     const addNewMessage = async (values) => {
         try {
@@ -21,7 +28,12 @@ const FormTable = ({jsonData}) => {
 
     return (
         <>
-            <NewMessageForm addNewMessage={addNewMessage} />
+            {
+                userAuthenticated 
+                ? <NewMessageForm addNewMessage={addNewMessage} /> 
+                : <LoginForm {...{ logInUser }} />
+            }
+            
             <MessageTable {...{ data }}/>
         </>
     );
