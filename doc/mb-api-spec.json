@@ -5,6 +5,13 @@
         "version": "1.0"
     },
     "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
         "schemas": {
             "message": {
                 "type": "object",
@@ -170,10 +177,16 @@
                     "400": {
                         "description": "Bad Request. The message in the body of the Request is either missing or malformed."
                     },
+                    "401": {
+                        "description": "User is unauthorized"
+                    },
                     "429": {
                         "$ref": "#/components/responses/429TooManyRequests"
                     }
-                }
+                },
+                "security": [
+                    { "bearerAuth": [] }
+                ]
             }
         },
         "/users": {
