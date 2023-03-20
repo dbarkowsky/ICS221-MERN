@@ -19,7 +19,6 @@ const FormTable = ({jsonData}) => {
             if (response.status == 200){
                 const decodedToken = jwt_decode(response.data.token);
                 usernameRef.current = decodedToken.username;
-                console.log(response);
                 sessionStorage.setItem('token', response.data.token);
                 setUserAuthenticated(true);
             }
@@ -52,6 +51,61 @@ const FormTable = ({jsonData}) => {
         }
     }
 
+    const updateMessage = async (values) => {
+        // get new message text and message id from values
+        const { newMsgText, id } = values;
+        // axios config
+        const axiosReqConfig = {
+            url: `${process.env.NEXT_PUBLIC_HOST}/api/messages/${id}`,
+            method: `patch`,
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+            },
+            data: {
+                msgText: newMsgText
+            }
+        }
+
+        try {
+            let response = await axios(axiosReqConfig);
+            if (response.status == 204){
+                // copy original message
+                let oldMessage = data.find(message => message.id == id);
+                // remove message from state data
+                let tempData = data.filter(message => message.id != id);
+                // update oldMessage
+                oldMessage.msgText = newMsgText;
+                // add changed message
+                setData([oldMessage, ...tempData]);
+                return response;
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const deleteMessage = async (id) => {
+        // axios config
+        const axiosReqConfig = {
+            url: `${process.env.NEXT_PUBLIC_HOST}/api/messages/${id}`,
+            method: `delete`,
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+            }
+        }
+
+        try {
+            let response = await axios(axiosReqConfig);
+            if (response.status == 200){
+                // remove message from state data
+                let tempData = data.filter(message => message.id != id);
+                setData([...tempData]);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     return (
         <>
             {
@@ -60,7 +114,7 @@ const FormTable = ({jsonData}) => {
                 : <LoginForm {...{ logInUser }} />
             }
             
-            <MessageTable {...{ data }}/>
+            <MessageTable {...{ data, updateMessage, deleteMessage, usernameRef }}/>
         </>
     );
 }
