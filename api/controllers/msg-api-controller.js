@@ -14,7 +14,31 @@ export const getAllMessages = async (req, res) => {
 
 // PATCH Request Handler
 export const updateMessage = async (req, res) => {
-    return res.status(200).send('Success')
+    try {
+        // get the message in question
+        let message = await messageModel.findById(req.params.messageId).exec();
+        if (!message){
+            // message wasn't found
+            return res.sendStatus(404);
+        } else {
+            // message found
+            // is user authorized?
+            if (message.name === req.user.username){
+                // user is owner of message, proceed
+                message.msgText = req.body.msgText;
+                await message.save();
+                // send back 204 No Content
+                return res.sendStatus(204);
+            } else {
+                // user is not the owner, reject
+                return res.sendStatus(401);
+            }
+        }
+    } catch (e) {
+        console.log(e);
+        return res.sendStatus(400);
+    }
+    
 }
 
 // POST Request Handler
