@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllMessages, addNewMessage, updateMessage } from '../controllers/msg-api-controller.js';
+import { getAllMessages, addNewMessage, updateMessage, deleteMessage } from '../controllers/msg-api-controller.js';
 import { registerNewUser, logInUser } from '../controllers/user-api-controller.js';
 import passport from 'passport';
 
@@ -16,6 +16,10 @@ router.route('/messages/:messageId')
     .patch(
         passport.authenticate('jwt', { session: false }),
         updateMessage
+    )
+    .delete(
+        passport.authenticate('jwt', { session: false }),
+        deleteMessage
     )
 
 router.route('/users')
