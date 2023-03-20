@@ -12,6 +12,11 @@ export const getAllMessages = async (req, res) => {
 
 };
 
+// PATCH Request Handler
+export const updateMessage = async (req, res) => {
+    return res.status(200).send('Success')
+}
+
 // POST Request Handler
 export const addNewMessage = async (req, res) => {
     try {

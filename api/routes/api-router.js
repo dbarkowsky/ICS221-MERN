@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllMessages, addNewMessage } from '../controllers/msg-api-controller.js';
+import { getAllMessages, addNewMessage, updateMessage } from '../controllers/msg-api-controller.js';
 import { registerNewUser, logInUser } from '../controllers/user-api-controller.js';
 import passport from 'passport';
 
@@ -11,6 +11,12 @@ router.route('/messages')
         passport.authenticate('jwt', { session: false }),
         addNewMessage
     );
+
+router.route('/messages/:messageId')
+    .patch(
+        passport.authenticate('jwt', { session: false }),
+        updateMessage
+    )
 
 router.route('/users')
     .post(registerNewUser);
