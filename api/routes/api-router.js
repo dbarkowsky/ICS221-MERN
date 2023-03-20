@@ -8,7 +8,7 @@ const router = express.Router();
 router.route('/messages')
     .get(getAllMessages)
     .post(
-        passport.authenticate('local', { session: false }),
+        passport.authenticate('jwt', { session: false }),
         addNewMessage
     );
 
