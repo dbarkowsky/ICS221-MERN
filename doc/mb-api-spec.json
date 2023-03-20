@@ -38,6 +38,22 @@
                     }
                 }
             },
+            "singleMessage": {
+                "type": "object",
+                "description": "A message",
+                "required": [
+                    "msgText"
+                ],
+                "properties": {
+                    "msgText": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 30,
+                        "description": "A message's text.",
+                        "example": "Hello World!"
+                    }
+                }
+            },
             "user": {
                 "type": "object",
                 "description": "A user",
@@ -179,6 +195,67 @@
                     },
                     "401": {
                         "description": "User is unauthorized"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/429TooManyRequests"
+                    }
+                },
+                "security": [
+                    { "bearerAuth": [] }
+                ]
+            }
+        },
+        "/messages/:messageId": {
+            "description": "A single message, based on ID",
+            "patch": {
+                "summary": "Updates a single message",
+                "description": "Receives a new message text and updated the object",
+                "requestBody": {
+                    "description": "New message text",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/singleMessage"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Successful update. No content created."
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "User is unauthorized"
+                    },
+                    "404": {
+                        "description": "Message cannot be found"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/429TooManyRequests"
+                    }
+                },
+                "security": [
+                    { "bearerAuth": [] }
+                ]
+            },
+            "delete": {
+                "summary": "Deletes a single message",
+                "description": "Deletes a message from messages collection",
+                "responses": {
+                    "200": {
+                        "description": "Successful delete. Message removed."
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "User is unauthorized"
+                    },
+                    "404": {
+                        "description": "Message cannot be found"
                     },
                     "429": {
                         "$ref": "#/components/responses/429TooManyRequests"
