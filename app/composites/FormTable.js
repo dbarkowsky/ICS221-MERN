@@ -10,8 +10,18 @@ const FormTable = ({jsonData}) => {
     const [userAuthenticated, setUserAuthenticated] = useState(false);
 
     const logInUser = async (values) => {
-        console.log(values);
-        setUserAuthenticated(true);
+        const { username, password } = values;
+        let response;
+        try {
+            response = await axios.post(`${process.env.NEXT_PUBLIC_HOST}/api/login`, values);
+            if (response.status == 200){
+                console.log(response);
+                setUserAuthenticated(true);
+            }
+        } catch (e){
+            console.log(e);
+        }
+        
     }
 
     const addNewMessage = async (values) => {
