@@ -10,12 +10,12 @@ const FormTable = ({jsonData}) => {
     const [userAuthenticated, setUserAuthenticated] = useState(false);
 
     const logInUser = async (values) => {
-        const { username, password } = values;
         let response;
         try {
             response = await axios.post(`${process.env.NEXT_PUBLIC_HOST}/api/login`, values);
             if (response.status == 200){
                 console.log(response);
+                sessionStorage.setItem('token', response.data.token);
                 setUserAuthenticated(true);
             }
         } catch (e){
@@ -25,8 +25,17 @@ const FormTable = ({jsonData}) => {
     }
 
     const addNewMessage = async (values) => {
+        // config for axios to use bearer token auth
+        const axiosReqConfig = {
+            url: `${process.env.NEXT_PUBLIC_HOST}/api/messages`,
+            method: `post`,
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+            },
+            data: values
+        }
         try {
-            let response = await axios.post(`${process.env.NEXT_PUBLIC_HOST}/api/messages`, values);
+            let response = await axios(axiosReqConfig);
             if (response.status == 201){
                 console.log(response);
                 setData([response.data, ...data]);
